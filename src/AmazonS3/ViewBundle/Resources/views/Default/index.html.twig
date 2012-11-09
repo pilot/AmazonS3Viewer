@@ -1,5 +1,8 @@
 {% for image in images %}
-    <a href="{{ url('image', {'name': image.filename}) }}">{{ image.filename }}</a><br>
+    <a href="{{ url('image', {'name': image.filename}) }}">
+        <img src="{{ url('thumb', {'name': image.filename}) }}" alt="{{ image.filename }}">
+    </a>
+    <br>
 {% else %}
     No images were found.
 {% endfor %}

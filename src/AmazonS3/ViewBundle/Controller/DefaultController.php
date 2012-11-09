@@ -21,13 +21,25 @@ class DefaultController extends Controller
         ));
     }
 
+    public function thumbAction($name)
+    {
+        $amazon = $this->get('s3_view.service');
+
+        $name = $this->container->getParameter('s3_view.bucket_name').'/'.$name;
+        if (!$amazon->isObjectAvailable($name)) {
+            throw $this->createNotFoundException(sprintf('Image "%s" was not found.', $name));
+        }
+
+        return new Response($amazon->getObject($name));
+    }
+
     public function imageAction($name)
     {
         $amazon = $this->get('s3_view.service');
 
         $name = $this->container->getParameter('s3_view.bucket_name').'/'.str_replace('-thumb', '-org', $name);
         if (!$amazon->isObjectAvailable($name)) {
-            throw $this->createNotFoundException(sprintf('Image %s was not found.', $name));
+            throw $this->createNotFoundException(sprintf('Image "%s" was not found.', $name));
         }
 
         return new Response($amazon->getObject($name));

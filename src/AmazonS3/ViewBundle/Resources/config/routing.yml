@@ -2,6 +2,10 @@ homepage:
     pattern:  /
     defaults: { _controller: ViewBundle:Default:index }
 
+thumb:
+    pattern:  /thumb/{name}
+    defaults: { _controller: ViewBundle:Default:thumb }
+
 image:
     pattern:  /{name}
     defaults: { _controller: ViewBundle:Default:image }
