@@ -42,6 +42,6 @@ doctrine:
 
 view:
     client_data:
-        key:          XXXX
-        secret:       XXXX
-        bucket_name:  image-bucket-name
+        key:          1RYZYRHFYGHNPWP7RV02
+        secret:       4EXj7XKUVQfsDrkJmeB27cs7Dk82+5389vQtvPSn
+        bucket_name:  knp-cats
