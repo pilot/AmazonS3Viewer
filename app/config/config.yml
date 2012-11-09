@@ -45,3 +45,4 @@ view:
         key:          1RYZYRHFYGHNPWP7RV02
         secret:       4EXj7XKUVQfsDrkJmeB27cs7Dk82+5389vQtvPSn
         bucket_name:  knp-cats
+        cdn_url:      http://knp-cats.s3-website-us-east-1.amazonaws.com/
