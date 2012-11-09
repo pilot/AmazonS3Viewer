@@ -4,7 +4,7 @@ namespace AmazonS3\ViewBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class DefaultController extends Controller
 {
@@ -13,61 +13,33 @@ class DefaultController extends Controller
         $images = $this->get('s3_view.service')->getObjectsByBucket(
             $this->container->getParameter('s3_view.bucket_name'),
             array(
-                 'delimiter' => '-thumb.jpg',
-                 'max-keys'  => 3,
+                 'delimiter' => '-org.jpg',
+                 'max-keys'  => 15,
                  'marker'    => $request->query->get('marker')
             )
         );
 
+        // to prevent displaying directory
+        array_shift($images);
+
         return $this->render('ViewBundle:Default:index.html.twig', array(
-            'images' => $images ?: array()
+            'images' => $images ?: array(),
+            'url'    => $this->container->getParameter('s3_view.cdn_url')
         ));
     }
 
-    public function thumbAction(Request $request,$name)
+    public function imageAction($name)
     {
         $amazon = $this->get('s3_view.service');
 
-        $name = $this->container->getParameter('s3_view.bucket_name').'/'.$name;
-        if (!$info = $amazon->getInfo($name)) {
-            throw $this->createNotFoundException(sprintf('Image "%s" was not found.', $name));
+        $fullname = $this->container->getParameter('s3_view.bucket_name').'/'.$name;
+        if (!$amazon->isObjectAvailable($fullname)) {
+            throw $this->createNotFoundException(sprintf('Image "%s" was not found.', $fullname));
         }
 
-        $response = $this->createImageResponse($info);
-        if ($response->isNotModified($request)) {
-            return $response->send();
-        }
-
-        $response->setContent($amazon->getObject($name));
-
-        return $response;
-    }
-
-    public function imageAction(Request $request, $name)
-    {
-        $amazon = $this->get('s3_view.service');
-
-        $name = $this->container->getParameter('s3_view.bucket_name').'/'.str_replace('-thumb', '-org', $name);
-        if (!$info = $amazon->getInfo($name)) {
-            throw $this->createNotFoundException(sprintf('Image "%s" was not found.', $name));
-        }
-
-        $response = $this->createImageResponse($info);
-        if ($response->isNotModified($request)) {
-            return $response->send();
-        }
-
-        $response->setContent($amazon->getObject($name));
-
-        return $response;
-    }
-
-    private function createImageResponse(array $info)
-    {
-        $response = new Response('', 200, array('Content-Type' => $info['type']));
-        $response->setLastModified(new \DateTime('@'.$info['mtime']));
-        $response->setExpires(new \DateTime('-30 days'));
-
-        return $response;
+        return $this->render('ViewBundle:Default:image.html.twig', array(
+            'name'   => $name,
+            'url'    => $this->container->getParameter('s3_view.cdn_url')
+        ));
     }
 }

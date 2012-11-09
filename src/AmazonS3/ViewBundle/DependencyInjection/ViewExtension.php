@@ -28,6 +28,7 @@ class ViewExtension extends Extension
         );
 
         $container->setParameter('s3_view.bucket_name', $config['client_data']['bucket_name']);
+        $container->setParameter('s3_view.cdn_url', rtrim($config['client_data']['cdn_url'], '/'));
     }
 
     public function getAlias()
