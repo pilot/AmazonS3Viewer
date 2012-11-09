@@ -18,10 +18,14 @@ class ViewExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
-        $definition = new Definition('ZendService\Amazon\S3\S3', array($config['client_data']['key'], $config['client_data']['secret'], $config['client_data']['region']));
-        $definition->addMethodCall('registerStreamWrapper', array('s3'));
-
-        $container->setDefinition('s3_view.service', $definition);
+        $container->setDefinition(
+            's3_view.service',
+            new Definition('ZendService\Amazon\S3\S3', array(
+                $config['client_data']['key'],
+                $config['client_data']['secret'],
+                $config['client_data']['region']
+            ))
+        );
     }
 
     public function getAlias()
