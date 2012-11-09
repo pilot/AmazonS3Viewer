@@ -1,0 +1,8 @@
+{% for image in images %}
+    <a href="{{ url('image', {'name': image|replace({'-thumb': '-org'})}) }}">
+        <img src="{{ url ~ '/' ~ image }}" alt="{{ image }}">
+    </a>
+    <br>
+{% else %}
+    No more images to show.
+{% endfor %}

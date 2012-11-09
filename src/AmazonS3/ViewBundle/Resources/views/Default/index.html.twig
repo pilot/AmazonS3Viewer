@@ -1,0 +1,38 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+<div id="imageswrapper">
+    {% include 'ViewBundle:Default:_list.html.twig' %}
+</div>
+<div id="ajaxloader" style="display:none;"><img src="{{ asset('bundles/view/images/ajax-loader.gif') }}" /></div>
+
+<script type="text/javascript">
+$(function() {
+    var loading = false;
+    $(window).scroll(function() {
+        if (loading) {
+            return;
+        }
+
+        if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+            $.ajax({
+                url: '?marker='+$('#imageswrapper a:last img').attr('alt'),
+                beforeSend: function() {
+                    loading = true;
+                    $('#ajaxloader').show();
+                },
+                success: function(data) {
+                    if (/No more images to show/im.test(data)) {
+                        $('#ajaxloader').html('No more images to show.');
+                    } else {
+                        $('#imageswrapper').append(data);
+                        $('#ajaxloader').hide();
+                        loading = false;
+                    }
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %}
