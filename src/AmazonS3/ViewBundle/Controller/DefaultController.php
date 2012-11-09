@@ -13,7 +13,7 @@ class DefaultController extends Controller
             $this->container->getParameter('s3_view.bucket_name'),
             array(
                  'delimiter' => '-org.jpg',
-                 'max-keys'  => 15,
+                 'max-keys'  => $this->container->getParameter('items_per_page'),
                  'marker'    => $request->query->get('marker')
             )
         );
