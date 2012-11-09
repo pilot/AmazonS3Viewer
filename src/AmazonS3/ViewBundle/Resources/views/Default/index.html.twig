@@ -1,1 +1,5 @@
-image list
+{% for image in images %}
+    {{ image.filename }}<br>
+{% else %}
+    No images were found.
+{% endfor %}
