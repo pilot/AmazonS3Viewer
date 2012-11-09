@@ -39,3 +39,8 @@ doctrine:
     orm:
         auto_generate_proxy_classes: %kernel.debug%
         auto_mapping: true
+
+view:
+    client_data:
+        key:      XXXX
+        secret:   XXXX
