@@ -42,5 +42,6 @@ doctrine:
 
 view:
     client_data:
-        key:      XXXX
-        secret:   XXXX
+        key:          XXXX
+        secret:       XXXX
+        bucket_name:  image-bucket-name

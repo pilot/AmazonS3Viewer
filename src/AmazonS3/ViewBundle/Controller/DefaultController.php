@@ -17,7 +17,7 @@ class DefaultController extends Controller
         $finder->name('*-thumb.jpg')->size('< 100K')->date('since 1 day ago');
 
         return $this->render('ViewBundle:Default:index.html.twig', array(
-            'images' => $finder->in('s3://bucket-name')
+            'images' => $finder->in('s3://'.$this->container->getParameter('s3_view.bucket_name'))
         ));
     }
 
@@ -25,7 +25,7 @@ class DefaultController extends Controller
     {
         $amazon = $this->get('s3_view.service');
 
-        $name = 'bucket-name/'.str_replace('-thumb', '-org', $name);
+        $name = $this->container->getParameter('s3_view.bucket_name').'/'.str_replace('-thumb', '-org', $name);
         if (!$amazon->isObjectAvailable($name)) {
             throw $this->createNotFoundException(sprintf('Image %s was not found.', $name));
         }

@@ -23,6 +23,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('key')->isRequired()->end()
                         ->scalarNode('secret')->isRequired()->end()
                         ->scalarNode('region')->defaultNull()->end()
+                        ->scalarNode('bucket_name')->isRequired()->end()
                     ->end()
                 ->end()
             ->end()

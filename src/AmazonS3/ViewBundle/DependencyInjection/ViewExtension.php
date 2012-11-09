@@ -26,6 +26,8 @@ class ViewExtension extends Extension
                 $config['client_data']['region']
             ))
         );
+
+        $container->setParameter('s3_view.bucket_name', $config['client_data']['bucket_name']);
     }
 
     public function getAlias()
