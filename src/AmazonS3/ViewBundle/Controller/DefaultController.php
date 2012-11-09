@@ -4,6 +4,7 @@ namespace AmazonS3\ViewBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
@@ -18,5 +19,17 @@ class DefaultController extends Controller
         return $this->render('ViewBundle:Default:index.html.twig', array(
             'images' => $finder->in('s3://bucket-name')
         ));
+    }
+
+    public function imageAction($name)
+    {
+        $amazon = $this->get('s3_view.service');
+
+        $name = 'bucket-name/'.str_replace('-thumb', '-org', $name);
+        if (!$amazon->isObjectAvailable($name)) {
+            throw $this->createNotFoundException(sprintf('Image %s was not found.', $name));
+        }
+
+        return new Response($amazon->getObject($name));
     }
 }

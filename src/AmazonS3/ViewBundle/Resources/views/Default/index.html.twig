@@ -1,5 +1,5 @@
 {% for image in images %}
-    {{ image.filename }}<br>
+    <a href="{{ url('image', {'name': image.filename}) }}">{{ image.filename }}</a><br>
 {% else %}
     No images were found.
 {% endfor %}
