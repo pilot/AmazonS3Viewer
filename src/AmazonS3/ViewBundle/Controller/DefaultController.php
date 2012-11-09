@@ -24,7 +24,7 @@ class DefaultController extends Controller
         ));
     }
 
-    public function thumbAction($name)
+    public function thumbAction(Request $request,$name)
     {
         $amazon = $this->get('s3_view.service');
 
@@ -33,10 +33,17 @@ class DefaultController extends Controller
             throw $this->createNotFoundException(sprintf('Image "%s" was not found.', $name));
         }
 
-        return new Response($amazon->getObject($name), 200, array('Content-Type' => $info['type']));
+        $response = $this->createImageResponse($info);
+        if ($response->isNotModified($request)) {
+            return $response->send();
+        }
+
+        $response->setContent($amazon->getObject($name));
+
+        return $response;
     }
 
-    public function imageAction($name)
+    public function imageAction(Request $request, $name)
     {
         $amazon = $this->get('s3_view.service');
 
@@ -45,6 +52,22 @@ class DefaultController extends Controller
             throw $this->createNotFoundException(sprintf('Image "%s" was not found.', $name));
         }
 
-        return new Response($amazon->getObject($name), 200, array('Content-Type' => $info['type']));
+        $response = $this->createImageResponse($info);
+        if ($response->isNotModified($request)) {
+            return $response->send();
+        }
+
+        $response->setContent($amazon->getObject($name));
+
+        return $response;
+    }
+
+    private function createImageResponse(array $info)
+    {
+        $response = new Response('', 200, array('Content-Type' => $info['type']));
+        $response->setLastModified(new \DateTime('@'.$info['mtime']));
+        $response->setExpires(new \DateTime('-30 days'));
+
+        return $response;
     }
 }
