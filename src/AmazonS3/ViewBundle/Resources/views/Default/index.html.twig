@@ -2,33 +2,25 @@
 
 {% block body %}
 <div id="imageswrapper">
-    {% for image in images %}
-        <a href="{{ url('image', {'name': image|replace({'-thumb': '-org'})}) }}">
-            <img src="{{ url ~ '/' ~ image }}" alt="{{ image }}">
-        </a>
-        <br>
-    {% else %}
-        No images were found.
-    {% endfor %}
+    {% include 'ViewBundle:Default:_list.html.twig' %}
 </div>
-{% set last = images[images|length - 1] %}
-{{ get_image_thumb(last) }}
 <div id="ajaxloader" style="display:none;"><img src="{{ asset('bundles/view/images/ajax-loader.gif') }}" /></div>
 
 <script type="text/javascript">
 $(function() {
-
+    var loadImages = true;
     $(window).scroll(function() {
-        if($(window).scrollTop() == $(document).height() - $(window).height()) {
+        if (loadImages && ($(window).scrollTop() == $(document).height() - $(window).height())) {
             $('#ajaxloader').show();
             $.ajax({
-                url: '?marker={{ get_image_thumb(last) }}',
+                url: '?marker='+$('#imageswrapper a:last img').attr('alt'),
                 success: function(data) {
-                    if (data) {
+                    if (data && data != 'No more images to show.') {
                         $('#imageswrapper').append(data);
                         $('#ajaxloader').hide();
-                } else {
+                    } else {
                         $('#ajaxloader').html('No more images to show.');
+                        loadImages = false;
                     }
                 }
             });

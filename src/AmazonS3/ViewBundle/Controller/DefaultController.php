@@ -4,7 +4,6 @@ namespace AmazonS3\ViewBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class DefaultController extends Controller
 {
@@ -18,12 +17,22 @@ class DefaultController extends Controller
                  'marker'    => $request->query->get('marker')
             )
         );
+        $images = $images ?: array();
 
         // to prevent displaying directory
-        array_shift($images);
+        if (isset($images[0]) && false === stripos($images[0], '-thumb')) {
+            array_shift($images);
+        }
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('ViewBundle:Default:_list.html.twig', array(
+                 'images' => $images,
+                 'url'    => $this->container->getParameter('s3_view.cdn_url')
+            ));
+        }
 
         return $this->render('ViewBundle:Default:index.html.twig', array(
-            'images' => $images ?: array(),
+            'images' => $images,
             'url'    => $this->container->getParameter('s3_view.cdn_url')
         ));
     }
