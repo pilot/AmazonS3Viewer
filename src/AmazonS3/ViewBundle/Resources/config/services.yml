@@ -1,0 +1,6 @@
+services:
+    amazon_view.view_extension:
+        class: AmazonS3\ViewBundle\Twig\ViewExtension
+        tags:
+            - { name: twig.extension }
+        public: false

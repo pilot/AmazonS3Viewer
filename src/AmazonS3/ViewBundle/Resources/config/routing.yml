@@ -1,0 +1,9 @@
+homepage:
+    pattern:  /
+    defaults: { _controller: ViewBundle:Default:index }
+
+image:
+    pattern:  /{name}
+    defaults: { _controller: ViewBundle:Default:image }
+    requirements:
+        name: .+
