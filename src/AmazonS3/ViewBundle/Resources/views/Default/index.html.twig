@@ -8,24 +8,26 @@
 
 <script type="text/javascript">
 $(function() {
-    var loadImages = true,
-        loading = false;
+    var loading = false;
     $(window).scroll(function() {
-        if (!loading && loadImages && ($(window).scrollTop() == $(document).height() - $(window).height())) {
-            $('#ajaxloader').show();
+        if (loading) {
+            return;
+        }
+
+        if ($(window).scrollTop() == $(document).height() - $(window).height()) {
             $.ajax({
                 url: '?marker='+$('#imageswrapper a:last img').attr('alt'),
                 beforeSend: function() {
                     loading = true;
+                    $('#ajaxloader').show();
                 },
                 success: function(data) {
-                    if (data && data != 'No more images to show.') {
+                    if (/No more images to show/im.test(data)) {
+                        $('#ajaxloader').html('No more images to show.');
+                    } else {
                         $('#imageswrapper').append(data);
                         $('#ajaxloader').hide();
                         loading = false;
-                    } else {
-                        $('#ajaxloader').html('No more images to show.');
-                        loadImages = false;
                     }
                 }
             });
