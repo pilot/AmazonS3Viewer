@@ -11,11 +11,10 @@
         No images were found.
     {% endfor %}
 </div>
-
+{% set last = images[images|length - 1] %}
+{{ get_image_thumb(last) }}
 <div id="ajaxloader" style="display:none;"><img src="{{ asset('bundles/view/images/ajax-loader.gif') }}" /></div>
-{% endblock %}
 
-{% block javascripts %}
 <script type="text/javascript">
 $(function() {
 
@@ -25,7 +24,7 @@ $(function() {
         {
             $('#ajaxloader').show();
             $.ajax({
-                url: '?marker=image14-thumb.jpg',
+                url: '?marker={{ get_image_thumb(last) }}',
                 success: function(data)
                 {
                     if (data) {
@@ -39,6 +38,5 @@ $(function() {
         }
     });
 });
-    
 </script>
 {% endblock %}
