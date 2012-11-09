@@ -3,21 +3,24 @@
 namespace AmazonS3\ViewBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $amazon = $this->get('s3_view.service');
-        $amazon->registerStreamWrapper('s3');
-
-        $finder = new Finder();
-        $finder->name('*-thumb.jpg')->size('< 100K')->date('since 1 day ago');
+        $images = $this->get('s3_view.service')->getObjectsByBucket(
+            $this->container->getParameter('s3_view.bucket_name'),
+            array(
+                 'delimiter' => '-thumb.jpg',
+                 'max-keys'  => 3,
+                 'marker'    => $request->query->get('marker')
+            )
+        );
 
         return $this->render('ViewBundle:Default:index.html.twig', array(
-            'images' => $finder->in('s3://'.$this->container->getParameter('s3_view.bucket_name'))
+            'images' => $images ?: array()
         ));
     }
 

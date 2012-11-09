@@ -1,6 +1,6 @@
 {% for image in images %}
-    <a href="{{ url('image', {'name': image.filename}) }}">
-        <img src="{{ url('thumb', {'name': image.filename}) }}" alt="{{ image.filename }}">
+    <a href="{{ url('image', {'name': image}) }}">
+        <img src="{{ url('thumb', {'name': image}) }}" alt="{{ image }}">
     </a>
     <br>
 {% else %}
