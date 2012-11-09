@@ -1,8 +1,44 @@
-{% for image in images %}
-    <a href="{{ url('image', {'name': image}) }}">
-        <img src="{{ url('thumb', {'name': image}) }}" alt="{{ image }}">
-    </a>
-    <br>
-{% else %}
-    No images were found.
-{% endfor %}
+{% extends '::base.html.twig' %}
+
+{% block body %}
+<div id="imageswrapper">
+    {% for image in images %}
+        <a href="{{ url('image', {'name': image}) }}">
+            <img src="{{ url('thumb', {'name': image}) }}" alt="{{ image }}">
+        </a>
+        <br>
+    {% else %}
+        No images were found.
+    {% endfor %}
+</div>
+
+<div id="ajaxloader" style="display:none;"><img src="{{ asset('bundles/view/images/ajax-loader.gif') }}" /></div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+$(function() {
+
+    $(window).scroll(function()
+    {
+        if($(window).scrollTop() == $(document).height() - $(window).height())
+        {
+            $('#ajaxloader').show();
+            $.ajax({
+                url: '?marker=image14-thumb.jpg',
+                success: function(data)
+                {
+                    if (data) {
+                        $('#imageswrapper').append(data);
+                        $('#ajaxloader').hide();
+                    } else {
+                        $('#ajaxloader').html('No more images to show.');
+                    }
+                }
+            });
+        }
+    });
+});
+    
+</script>
+{% endblock %}

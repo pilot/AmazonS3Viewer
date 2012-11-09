@@ -5,6 +5,9 @@
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+
+        <script src="{{ asset('bundles/view/js/jquery-1.8.2.min.js') }}"></script>
+        <script src="{{ asset('bundles/view/js/jquery.infinitescroll.min.js') }}"></script>
     </head>
     <body>
         {% block body %}{% endblock %}
