@@ -26,11 +26,11 @@ class DefaultController extends Controller
         $amazon = $this->get('s3_view.service');
 
         $name = $this->container->getParameter('s3_view.bucket_name').'/'.$name;
-        if (!$amazon->isObjectAvailable($name)) {
+        if (!$info = $amazon->getInfo($name)) {
             throw $this->createNotFoundException(sprintf('Image "%s" was not found.', $name));
         }
 
-        return new Response($amazon->getObject($name));
+        return new Response($amazon->getObject($name), 200, array('Content-Type' => $info['type']));
     }
 
     public function imageAction($name)
@@ -38,10 +38,10 @@ class DefaultController extends Controller
         $amazon = $this->get('s3_view.service');
 
         $name = $this->container->getParameter('s3_view.bucket_name').'/'.str_replace('-thumb', '-org', $name);
-        if (!$amazon->isObjectAvailable($name)) {
+        if (!$info = $amazon->getInfo($name)) {
             throw $this->createNotFoundException(sprintf('Image "%s" was not found.', $name));
         }
 
-        return new Response($amazon->getObject($name));
+        return new Response($amazon->getObject($name), 200, array('Content-Type' => $info['type']));
     }
 }
