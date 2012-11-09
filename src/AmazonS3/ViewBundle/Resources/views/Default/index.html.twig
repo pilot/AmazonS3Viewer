@@ -8,16 +8,21 @@
 
 <script type="text/javascript">
 $(function() {
-    var loadImages = true;
+    var loadImages = true,
+        loading = false;
     $(window).scroll(function() {
-        if (loadImages && ($(window).scrollTop() == $(document).height() - $(window).height())) {
+        if (!loading && loadImages && ($(window).scrollTop() == $(document).height() - $(window).height())) {
             $('#ajaxloader').show();
             $.ajax({
                 url: '?marker='+$('#imageswrapper a:last img').attr('alt'),
+                beforeSend: function() {
+                    loading = true;
+                },
                 success: function(data) {
                     if (data && data != 'No more images to show.') {
                         $('#imageswrapper').append(data);
                         $('#ajaxloader').hide();
+                        loading = false;
                     } else {
                         $('#ajaxloader').html('No more images to show.');
                         loadImages = false;
